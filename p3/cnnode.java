@@ -3,8 +3,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 import sun.misc.*;
-
-//import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class cnnode {
         static <T extends Serializable> void sendPacket(T packet, InetAddress address, int port, DatagramSocket socket) throws Exception {
@@ -253,9 +252,8 @@ public class cnnode {
         public static void clientListen(InetAddress address, int sourcePort) throws Exception {
                 listenSocket = new DatagramSocket(sourcePort);
 
-                boolean enableTableThread = true;
-                
-                //AtomicBoolean enableTableThread = new AtomicBoolean(true);
+               // boolean enableTableThread = true;
+                AtomicBoolean enableTableThread = new AtomicBoolean(true);
 
                 boolean enableLossThread = true;
                 boolean enableGBN = true;
@@ -405,15 +403,14 @@ public class cnnode {
                       }
 
                       //enabletablethread.get()
-                      if(enableTableThread) {
-                                executorService.scheduleAtFixedRate(() -> sendTable(address), 0, 5, TimeUnit.SECONDS);
-                                enableTableThread = false;
+                      if(enableTableThread.get()) {
+                               // executorService.scheduleAtFixedRate(() -> sendTable(address), 0, 5, TimeUnit.SECONDS);
+                               // enableTableThread = false;
                      
- /*   executorService.schedule(() -> {
-        executorService.scheduleAtFixedRate(() -> sendTable(address), 0, 5, TimeUnit.SECONDS);
-        enableTableThread.set(false);
-    }, 60, TimeUnit.SECONDS);
-*/
+                                executorService.schedule(() -> {
+                                        executorService.scheduleAtFixedRate(() -> sendTable(address), 0, 5, TimeUnit.SECONDS);
+                                        enableTableThread.set(false);
+                                        }, 60, TimeUnit.SECONDS);
                       }
 
                         if(enableGBN) {
@@ -566,3 +563,4 @@ public class cnnode {
 
         }     //end of void main function
 } //end of dvnode class
+
